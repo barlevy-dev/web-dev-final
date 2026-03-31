@@ -2,8 +2,21 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import passport from 'passport';
+import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger';
+import { initializePassport } from './config/passport';
+import { errorHandler } from './middleware/error.middleware';
+import { generalLimiter } from './middleware/rateLimiter.middleware';
+
+// Route imports
+import authRoutes from './routes/auth.routes';
+import userRoutes from './routes/user.routes';
+import postRoutes from './routes/post.routes';
+import commentRoutes from './routes/comment.routes';
+import aiRoutes from './routes/ai.routes';
+import uploadRoutes from './routes/upload.routes';
 
 const app: Application = express();
 
@@ -21,11 +34,19 @@ app.use(
 // Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Logging middleware
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// Rate limiting
+app.use('/api/', generalLimiter);
+
+// Passport initialization
+initializePassport();
+app.use(passport.initialize());
 
 // API Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -40,12 +61,13 @@ app.get('/health', (_req: Request, res: Response) => {
   });
 });
 
-// API routes will be added here
-// app.use('/api/auth', authRoutes);
-// app.use('/api/users', userRoutes);
-// app.use('/api/posts', postRoutes);
-// app.use('/api/comments', commentRoutes);
-// app.use('/api/ai', aiRoutes);
+// API routes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api', commentRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Serve uploaded files
 app.use('/uploads', express.static('uploads'));
@@ -58,7 +80,7 @@ app.use((_req: Request, res: Response) => {
   });
 });
 
-// Error handling middleware will be added here
-// app.use(errorHandler);
+// Error handling middleware
+app.use(errorHandler);
 
 export default app;

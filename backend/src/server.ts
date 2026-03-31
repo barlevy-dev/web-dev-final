@@ -4,6 +4,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import app from './app';
 import { connectDatabase } from './config/database';
+import { initializeSocket } from './config/socket';
 
 // Load environment variables
 dotenv.config();
@@ -12,8 +13,8 @@ const PORT = process.env.PORT || 5000;
 
 // HTTPS configuration
 const httpsOptions = {
-  key: fs.readFileSync(path.resolve(__dirname, process.env.HTTPS_KEY_PATH || '../certs/server.key')),
-  cert: fs.readFileSync(path.resolve(__dirname, process.env.HTTPS_CERT_PATH || '../certs/server.crt')),
+  key: fs.readFileSync(path.resolve(process.cwd(), process.env.HTTPS_KEY_PATH || '../certs/server.key')),
+  cert: fs.readFileSync(path.resolve(process.cwd(), process.env.HTTPS_CERT_PATH || '../certs/server.crt')),
 };
 
 // Start server
@@ -26,8 +27,9 @@ const startServer = async () => {
     // Create HTTPS server
     const server = https.createServer(httpsOptions, app);
 
-    // Socket.io will be initialized here
-    // initializeSocket(server);
+    // Initialize Socket.io
+    initializeSocket(server);
+    console.log('✅ Socket.io initialized');
 
     // Start listening
     server.listen(PORT, () => {
