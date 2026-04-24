@@ -2,6 +2,7 @@ import { Comment, IComment } from '../models/comment.model';
 import { Post } from '../models/post.model';
 import { User } from '../models/user.model';
 import { AppError } from '../middleware/error.middleware';
+import { emitCommentEvent } from '../sockets/handlers';
 
 export const createComment = async (
   postId: string,
@@ -29,6 +30,7 @@ export const createComment = async (
   post.commentsCount += 1;
   await post.save();
 
+  emitCommentEvent(postId, 'comment:created', comment);
   return comment;
 };
 

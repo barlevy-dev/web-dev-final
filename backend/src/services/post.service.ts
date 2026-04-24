@@ -3,6 +3,7 @@ import { Post, IPost } from '../models/post.model';
 import { Comment } from '../models/comment.model';
 import { User } from '../models/user.model';
 import { AppError } from '../middleware/error.middleware';
+import { emitPostEvent } from '../sockets/handlers';
 
 interface PostFilters {
   courseTag?: string;
@@ -33,6 +34,7 @@ export const createPost = async (
     authorImageUrl: user.profileImageUrl,
   });
 
+  emitPostEvent('post:created', post);
   return post;
 };
 
@@ -123,6 +125,7 @@ export const likePost = async (postId: string, userId: string): Promise<IPost> =
   post.likes = post.likedBy.length;
   await post.save();
 
+  emitPostEvent('post:liked', post);
   return post;
 };
 
@@ -141,5 +144,6 @@ export const unlikePost = async (postId: string, userId: string): Promise<IPost>
   post.likes = post.likedBy.length;
   await post.save();
 
+  emitPostEvent('post:liked', post);
   return post;
 };
