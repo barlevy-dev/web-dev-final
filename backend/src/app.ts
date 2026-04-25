@@ -23,10 +23,18 @@ const app: Application = express();
 // Security middleware
 app.use(helmet());
 
-// CORS configuration
+// CORS configuration — allow any localhost port in development, specific origin in production
+const allowedOrigin = process.env.FRONTEND_URL || 'https://localhost:3000';
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'https://localhost:3000',
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // non-browser requests
+      if (process.env.NODE_ENV === 'development' && /^https?:\/\/localhost(:\d+)?$/.test(origin)) {
+        return callback(null, true);
+      }
+      if (origin === allowedOrigin) return callback(null, true);
+      callback(new Error(`CORS: origin ${origin} not allowed`));
+    },
     credentials: true,
   })
 );

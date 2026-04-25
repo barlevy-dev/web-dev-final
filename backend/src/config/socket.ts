@@ -7,7 +7,15 @@ let io: SocketIOServer;
 export const initializeSocket = (server: HTTPSServer): SocketIOServer => {
   io = new SocketIOServer(server, {
     cors: {
-      origin: process.env.FRONTEND_URL || 'https://localhost:3000',
+      origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+        if (!origin) return callback(null, true);
+        if (process.env.NODE_ENV === 'development' && /^https?:\/\/localhost(:\d+)?$/.test(origin)) {
+          return callback(null, true);
+        }
+        const allowed = process.env.FRONTEND_URL || 'https://localhost:3000';
+        if (origin === allowed) return callback(null, true);
+        callback(new Error(`CORS: origin ${origin} not allowed`));
+      },
       credentials: true,
     },
   });
