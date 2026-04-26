@@ -1,10 +1,15 @@
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 import { AppError } from './error.middleware';
 
 const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE || '10485760', 10); // 10MB
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+const ensureUploadDir = (dir: string) => {
+  fs.mkdirSync(dir, { recursive: true });
+};
 
 const fileFilter = (
   _req: Express.Request,
@@ -20,7 +25,9 @@ const fileFilter = (
 
 const profileStorage = multer.diskStorage({
   destination: (_req, _file, cb) => {
-    cb(null, path.join(process.env.UPLOAD_DIR || './uploads', 'profiles'));
+    const dir = path.join(process.env.UPLOAD_DIR || './uploads', 'profiles');
+    ensureUploadDir(dir);
+    cb(null, dir);
   },
   filename: (_req, file, cb) => {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
@@ -31,7 +38,9 @@ const profileStorage = multer.diskStorage({
 
 const postStorage = multer.diskStorage({
   destination: (_req, _file, cb) => {
-    cb(null, path.join(process.env.UPLOAD_DIR || './uploads', 'posts'));
+    const dir = path.join(process.env.UPLOAD_DIR || './uploads', 'posts');
+    ensureUploadDir(dir);
+    cb(null, dir);
   },
   filename: (_req, file, cb) => {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;

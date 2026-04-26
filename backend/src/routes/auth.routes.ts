@@ -127,32 +127,4 @@ router.get(
   oauthCallback
 );
 
-/**
- * @swagger
- * /api/auth/facebook:
- *   get:
- *     summary: Login with Facebook
- *     tags: [Authentication]
- *     responses:
- *       302:
- *         description: Redirect to Facebook OAuth
- */
-router.get('/facebook', passport.authenticate('facebook', { scope: ['email'], session: false }));
-
-/**
- * @swagger
- * /api/auth/facebook/callback:
- *   get:
- *     summary: Facebook OAuth callback
- *     tags: [Authentication]
- *     responses:
- *       302:
- *         description: Redirect to frontend with token
- */
-router.get(
-  '/facebook/callback',
-  passport.authenticate('facebook', { session: false, failureRedirect: '/api/auth/login' }),
-  oauthCallback
-);
-
 export default router;

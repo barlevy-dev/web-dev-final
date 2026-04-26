@@ -130,15 +130,6 @@ export function RegisterForm() {
           Continue with Google
         </Button>
 
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full"
-          onClick={() => window.location.assign(`${BACKEND_URL}/api/auth/facebook`)}
-        >
-          Continue with Facebook
-        </Button>
-
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{' '}
           <Link to="/login" className="font-medium text-primary hover:underline">

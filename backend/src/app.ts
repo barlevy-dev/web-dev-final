@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
+import dotenv from 'dotenv';
 import { swaggerSpec } from './config/swagger';
 import { initializePassport } from './config/passport';
 import { errorHandler } from './middleware/error.middleware';
@@ -19,6 +20,7 @@ import aiRoutes from './routes/ai.routes';
 import uploadRoutes from './routes/upload.routes';
 
 const app: Application = express();
+dotenv.config();
 
 // Security middleware
 app.use(helmet());

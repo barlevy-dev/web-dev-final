@@ -108,15 +108,6 @@ export function LoginForm() {
           Continue with Google
         </Button>
 
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full"
-          onClick={() => window.location.assign(`${BACKEND_URL}/api/auth/facebook`)}
-        >
-          Continue with Facebook
-        </Button>
-
         <p className="text-center text-sm text-muted-foreground">
           Don't have an account?{' '}
           <Link to="/register" className="font-medium text-primary hover:underline">
