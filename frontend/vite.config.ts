@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
@@ -22,10 +23,23 @@ export default defineConfig({
   server: {
     port: 3000,
     https: httpsConfig,
+    proxy: {
+      '/uploads': {
+        target: 'https://localhost:5001',
+        secure: false, // trust self-signed cert on backend
+        changeOrigin: true,
+      },
+    },
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/tests/setup.ts'],
+    css: false,
   },
 });
