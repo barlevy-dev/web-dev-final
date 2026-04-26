@@ -1,7 +1,7 @@
 {
   "name": "studygram-backend",
   "version": "1.0.0",
-  "description": "Node.js + Express + MongoDB backend with TypeScript, JWT authentication, and real-time features",
+  "description": "Web Project",
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon",
