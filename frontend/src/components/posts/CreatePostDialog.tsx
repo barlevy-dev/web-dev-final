@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2, Sparkles, Tag } from 'lucide-react';
+import { Loader2, Tag } from 'lucide-react';
 import { useCreatePost } from '@/hooks/usePosts';
-import { useEnhanceContent, useSuggestTags } from '@/hooks/useAI';
+import { useSuggestTags } from '@/hooks/useAI';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -49,7 +49,6 @@ export function CreatePostDialog({ children }: CreatePostDialogProps) {
   const [open, setOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | undefined>();
   const createPost = useCreatePost();
-  const enhanceMutation = useEnhanceContent();
   const suggestTagsMutation = useSuggestTags();
 
   const form = useForm<FormValues>({
@@ -62,13 +61,6 @@ export function CreatePostDialog({ children }: CreatePostDialogProps) {
     form.reset();
     setImageUrl(undefined);
     setOpen(false);
-  };
-
-  const handleEnhance = async () => {
-    const content = form.getValues('content');
-    if (!content) return;
-    const enhanced = await enhanceMutation.mutateAsync(content);
-    form.setValue('content', enhanced, { shouldValidate: true });
   };
 
   const handleSuggestTag = async () => {
@@ -107,24 +99,7 @@ export function CreatePostDialog({ children }: CreatePostDialogProps) {
               name="content"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex items-center justify-between">
-                    <FormLabel>Content</FormLabel>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 text-xs gap-1 text-purple-600"
-                      onClick={handleEnhance}
-                      disabled={enhanceMutation.isPending}
-                    >
-                      {enhanceMutation.isPending ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                      ) : (
-                        <Sparkles className="h-3 w-3" />
-                      )}
-                      Enhance with AI
-                    </Button>
-                  </div>
+                  <FormLabel>Content</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Share what you know…"

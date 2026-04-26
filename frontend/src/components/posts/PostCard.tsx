@@ -166,6 +166,7 @@ export function PostCard({ post, onDeleted }: PostCardProps) {
 
         <CardFooter className="pt-0 gap-4">
           <button
+            aria-label={liked ? 'Unlike post' : 'Like post'}
             onClick={handleLike}
             disabled={!user || likePending}
             className={`flex items-center gap-1 text-sm transition-colors ${liked ? 'text-red-500' : 'text-muted-foreground hover:text-red-500'}`}
