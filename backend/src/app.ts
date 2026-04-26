@@ -22,6 +22,10 @@ import uploadRoutes from './routes/upload.routes';
 const app: Application = express();
 dotenv.config();
 
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 // Security middleware
 app.use(helmet());
 
