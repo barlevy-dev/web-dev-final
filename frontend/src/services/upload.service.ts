@@ -13,10 +13,12 @@ export const uploadService = {
     return data.data.imageUrl as string;
   },
 
-  // Resolve a relative imageUrl to a full URL for display
+  // In dev, Vite proxies /uploads through the same origin so no prefix needed.
+  // In production, prepend the backend URL.
   resolve: (imageUrl: string): string => {
     if (!imageUrl) return '';
     if (imageUrl.startsWith('http')) return imageUrl;
+    if (import.meta.env.DEV) return imageUrl; // Vite proxy handles it
     return `${BACKEND_URL}${imageUrl}`;
   },
 };
