@@ -54,7 +54,17 @@ export function PostFilters({ onFiltersChange }: PostFiltersProps) {
         onKeyDown={(e) => e.key === 'Enter' && apply()}
         className="w-36"
       />
-      <Select value={difficultyLevel} onValueChange={setDifficultyLevel}>
+      <Select
+        value={difficultyLevel}
+        onValueChange={(value) => {
+          setDifficultyLevel(value);
+          onFiltersChange({
+            courseTag: courseTag.trim() || undefined,
+            difficultyLevel: value || undefined,
+            search: search.trim() || undefined,
+          });
+        }}
+      >
         <SelectTrigger className="w-32">
           <SelectValue placeholder="Difficulty" />
         </SelectTrigger>
